@@ -33,16 +33,16 @@ class Canvas:
                     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255)
                     self.flood_fill((x, y), color)
 
-    def get_valid_neighbors(self, pos):
+    def get_valid_neighbors(self, pos, dist=1):
         ret = []
-        if (pos[0]-1 in range(size[0])) and (self.get_pixel_color((pos[0]-1, pos[1])) == (255, 255, 255, 255)):
-            ret.append((pos[0]-1, pos[1]))
-        if pos[0]+1 in range(size[0]) and (self.get_pixel_color((pos[0]+1, pos[1])) == (255, 255, 255, 255)):
-            ret.append((pos[0]+1, pos[1]))
-        if pos[1]+1 in range(size[0]) and (self.get_pixel_color((pos[0], pos[1]+1)) == (255, 255, 255, 255)):
-            ret.append((pos[0], pos[1]+1))
-        if pos[1]-1 in range(size[0]) and (self.get_pixel_color((pos[0], pos[1]-1)) == (255, 255, 255, 255)):
-            ret.append((pos[0], pos[1]-1))
+        if pos[0]-dist >= 0 and (self.get_pixel_color((pos[0]-dist, pos[1])) == (255, 255, 255, 255)):
+            ret.append((pos[0]-dist, pos[1]))
+        if pos[0]+dist < size[0] and (self.get_pixel_color((pos[0]+dist, pos[1])) == (255, 255, 255, 255)):
+            ret.append((pos[0]+dist, pos[1]))
+        if pos[1]+dist < size[0] and (self.get_pixel_color((pos[0], pos[1]+dist)) == (255, 255, 255, 255)):
+            ret.append((pos[0], pos[1]+dist))
+        if pos[1]-dist >= 0 and (self.get_pixel_color((pos[0], pos[1]-dist)) == (255, 255, 255, 255)):
+            ret.append((pos[0], pos[1]-dist))
         return ret
 
     def flood_fill(self, pos, color):
@@ -51,14 +51,10 @@ class Canvas:
         currpos = pos
         while currpos is not None:
             vis.append(currpos)
-            self.stroke_pixel(currpos, color, 2)
+            stsz = 2
+            self.stroke_pixel(currpos, color, stsz)
             neigh = self.get_valid_neighbors(currpos)
             unvis += neigh
-            '''
-            for n in neigh:
-                if n not in unvis and n not in vis:
-                    unvis.append(n)
-            '''
             if len(unvis) > 0:
                 currpos = unvis.pop()
             else:
